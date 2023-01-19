@@ -20,6 +20,7 @@
     "eslint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@asyncapi/html-template": "^0.28.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
