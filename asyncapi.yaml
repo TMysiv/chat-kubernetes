@@ -1,0 +1,66 @@
+asyncapi: 2.5.0
+info:
+  title: WebSockets chat service
+  version: 1.0.0
+  description: WebSockets api for Interngram chat-service
+
+servers:
+  demo:
+    url: http://localhost:4000
+    protocol: wss
+
+channels:
+  /:
+    subscribe:
+      message:
+        oneOf:
+          - $ref: "#/components/messages/CreateMessage"
+          - $ref: "#/components/messages/Typing"
+          - $ref: "#/components/messages/GetAllChatMessages"
+    bindings:
+      ws:
+        query:
+          type: object
+          properties:
+            access_token:
+              type: string
+          required: [access_token]
+          
+components:
+  messages:
+    CreateMessage:
+      name: create-message
+      payload:
+        type: object
+        properties:
+          userId:
+            type: integer
+            description: ID of user who is the author
+          messageText:
+            type: string
+            description: Text of the message
+          chatId:
+            type: integer
+            description: ID of the chat the message belongs to
+    Typing:
+      name: typing
+      payload:
+        type: object
+        properties:
+          userName:
+            type: string
+            description: Name of user that is typing or stoped typing
+          isTyping:
+            type: boolean
+            description: True - user is typing, false - user stoped typing
+    GetAllChatMessages:
+      name: get-all-chat-messages
+      payload:
+        type: object
+        properties:
+          userId:
+            type: integer
+            description: ID of user who is in the chat
+          chatId:
+            type: integer
+            description: ID of the chat the messages belong to
