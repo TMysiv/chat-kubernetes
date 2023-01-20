@@ -19,24 +19,28 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "max-len": [
-            "error",
-            {
-                "code": 90
-            }
-        ],
+        "arrow-body-style": "off",
+        "no-unused-vars": "warn",
+        "import/extensions": "off",
+        "eol-last": "warn",
+        "class-methods-use-this": "off",
+        "import/prefer-default-export": "off",
         "quotes": [
             "warn",
             "single"
         ],
-        "no-multiple-empty-lines": "warn",
-        "eol-last": "warn",
-        "@typescript-eslint/no-unused-vars": "warn",
-        "@typescript-eslint/semi": "off",
-        "@typescript-eslint/comma-dangle": [
-            "error",
-            "never"
+        "max-len": [
+            "warn",
+            {
+                "code": 140,
+                "tabWidth": 2,
+                "comments": 200,
+                "ignoreUrls": true,
+                "ignoreStrings": true
+            }
         ],
-        "import/prefer-default-export": "off"
+        "no-case-declarations": "off",
+        "no-multiple-empty-lines": "warn",
+        "import/no-extraneous-dependencies": "off"
     }
 }
