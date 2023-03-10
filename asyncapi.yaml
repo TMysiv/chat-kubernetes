@@ -1,66 +1,202 @@
-asyncapi: 2.5.0
+asyncapi: '2.6.0'
 info:
-  title: WebSockets chat service
-  version: 1.0.0
-  description: WebSockets api for Interngram chat-service
-
+  title: Socket.IO Chat Service
+  version: '1.0.0'
+  description: Documentation for Chat Service using Socket IO
 servers:
-  demo:
-    url: http://localhost:4000
-    protocol: wss
+  development:
+    url: 'localhost:5200'
+    protocol: WebSocket protocol
 
 channels:
-  /:
-    subscribe:
+  connection:
+    parameters:
+      token:
+        description: Bearer + token
+        schema:
+          type: string
+    publish:
+      operationId: Access Token
+      summary: Send in headers user Access token
       message:
-        oneOf:
-          - $ref: "#/components/messages/CreateMessage"
-          - $ref: "#/components/messages/Typing"
-          - $ref: "#/components/messages/GetAllChatMessages"
-    bindings:
-      ws:
-        query:
+        bindings:
+          socketio:
+            eventName: connection
+  authError:
+    subscribe:
+      operationId: auth error
+      summary: Receive auth errors
+      message:
+        payload:
           type: object
           properties:
-            access_token:
+            error:
               type: string
-          required: [access_token]
-          
-components:
-  messages:
-    CreateMessage:
-      name: create-message
-      payload:
-        type: object
-        properties:
-          userId:
-            type: integer
-            description: ID of user who is the author
-          messageText:
-            type: string
-            description: Text of the message
-          chatId:
-            type: integer
-            description: ID of the chat the message belongs to
-    Typing:
-      name: typing
-      payload:
-        type: object
-        properties:
-          userName:
-            type: string
-            description: Name of user that is typing or stoped typing
-          isTyping:
-            type: boolean
-            description: True - user is typing, false - user stoped typing
-    GetAllChatMessages:
-      name: get-all-chat-messages
-      payload:
-        type: object
-        properties:
-          userId:
-            type: integer
-            description: ID of user who is in the chat
-          chatId:
-            type: integer
-            description: ID of the chat the messages belong to
+              description: here user receive message of error
+        bindings:
+          socketio:
+            eventName: auth error
+
+  connected:
+    subscribe:
+      operationId: connected
+      summary: Receive all users chats
+      message:
+        payload:
+          type: object
+          properties:
+            id:
+              type: string
+              description: id of chats
+            chatName:
+              type: string
+              description:  name of chat
+            members:
+              type: array
+              description: array of users which are in chat
+        bindings:
+          socketio:
+            eventName: connected
+
+  joinRoom:
+    parameters:
+      room:
+        description: The ID of the room to join if chat exist
+        schema:
+          type: string
+    publish:
+      operationId: joinRoom
+      summary: Join a chat room if chat exist
+      message:
+        bindings:
+          socketio:
+            eventName: join room
+
+  joinRoom2:
+    parameters:
+      replyTo:
+        schema:
+          type: string
+          description: whom user want to write(if chat not exist)
+      chatName:
+        schema:
+          type: string
+          description: name of chat
+    publish:
+      operationId: join Room
+      summary: Create new chat
+      message:
+        bindings:
+          socketio:
+            eventName: join room
+
+  newChat:
+    subscribe:
+      operationId: newChat
+      summary: if chat not exist, user receive id of new chat
+      message:
+        payload:
+          type: object
+          properties:
+            room:
+              type: string
+              description: Id of new generated room
+        bindings:
+          socketio:
+            eventName: new chat
+
+  chatMessage:
+    parameters:
+      room:
+        description: The ID of the chat room to send a message to
+        schema:
+          type: string
+      message:
+        description: Users message
+        schema:
+          type: string
+    publish:
+      operationId: sendMessage
+      summary: Send a message to a chat room
+      message:
+        bindings:
+          socketio:
+            eventName: chat message
+  allMessagesFromChat:
+    subscribe:
+      operationId: all message from chat
+      summary: user receive all messages in chat
+      message:
+        payload:
+          type: object
+          properties:
+            chatId:
+              type: string
+              description: Id of  room
+            text:
+              type: string
+              description: message
+            userId:
+              type: string
+              description: Id of user, who write chat
+            id:
+              type: string
+              description: Id of message
+        bindings:
+          socketio:
+            eventName: all messages from chat
+
+  receiveMesssage:
+    subscribe:
+      operationId: receiveMessage
+      summary: receive a message from from chat
+      message:
+        payload:
+          type: object
+          properties:
+            message:
+              type: string
+              description: The message to receive
+            username:
+              type: string
+              description: who send message
+        bindings:
+          socketio:
+            eventName: message
+
+  leaveRoom:
+    parameters:
+      room:
+        description: The Id of room which user want to leave
+        schema:
+          type: string
+    publish:
+      operationId: leave room
+      summary: user can leave chat
+      message:
+        bindings:
+          socketio:
+            eventName: leave room
+
+  notifications:
+    subscribe:
+      operationId: notifications
+      summary: receive a notification
+      message:
+        payload:
+          type: object
+          properties:
+            message:
+              type: string
+              description: The message to receive
+            user:
+              type: string
+              description: id of user
+        bindings:
+          socketio:
+            eventName: notifications
+
+
+
+
+

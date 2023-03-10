@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id          String     @id @default(uuid())
+  email       String?    @unique
+  phoneNumber String?    @unique
+  fullName    String
+  nickname    String     @unique
+  dateOfBirth DateTime
+  photo       String?
+  city        String?
+  bio         String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  posts       Posts[]
+  comments    Comments[]
+  likes       Likes[]
+  followers   Follows[]  @relation("follower")
+  following   Follows[]  @relation("following")
+  messages    Messages[]
+}
+
+model Follows {
+  follower    UserProfile @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   UserProfile @relation("follower", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  createdAt   DateTime    @default(now())
+
+  @@id([followerId, followingId])
+}
+
+model Posts {
+  id          String      @id @default(uuid())
+  source      String[]
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  comments    Comments[]
+  hashtags    Hashtags[]
+  likes       Likes[]
+}
+
+model Comments {
+  id        String      @id @default(uuid())
+  creator   UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  message   String
+  post      Posts       @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post_id   String
+  reply_id  String?
+}
+
+model Hashtags {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Posts[]
+}
+
+model Likes {
+  id        String      @id @default(uuid())
+  posts     Posts       @relation(fields: [post_id], references: [id])
+  post_id   String
+  user      UserProfile @relation(fields: [user_id], references: [id])
+  user_id   String
+  createdAt DateTime    @default(now())
+}
+
+model confirmation_codes {
+  id           String  @id @default(uuid())
+  email        String?
+  phone_number String?
+  code         String
+  confirmed    Boolean @default(false)
+}
+
+model Chats {
+  id        String     @id @default(uuid())
+  members   String[]
+  chatName  String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  messages  Messages[]
+}
+
+model Messages {
+  id        String      @id @default(uuid())
+  text      String
+  user      UserProfile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   String
+  chat      Chats       @relation(fields: [chat_id], references: [id], onDelete: Cascade)
+  chat_id   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
