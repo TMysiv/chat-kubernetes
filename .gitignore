@@ -4,7 +4,6 @@
 .env
 .vscode
 package-lock.json
-docs
 
 # Logs
 logs
