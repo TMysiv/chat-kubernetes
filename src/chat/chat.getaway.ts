@@ -33,13 +33,13 @@ private chatService:ChatService,
         const validation = await this.authService.validateToken(token);
 
         if (!validation.id) {
-            return socket.emit('auth error', { error: 'Bad Authorization' });
+            return socket.emit('error', { error: 'Bad Authorization' });
         }
 
         const userFromDb = await this.userService.getUserById(validation.id);
 
         if (!userFromDb) {
-           return socket.emit('auth error', { error: 'User not found' });
+           return socket.emit('error', { error: 'User not found' });
         }
 
         socket.user = userFromDb;

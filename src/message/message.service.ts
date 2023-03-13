@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
 
 @Injectable()
@@ -13,6 +13,8 @@ export class MessageService {
                 chat_id: roomId,
                 user_id: userId,
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -21,6 +23,8 @@ export class MessageService {
             where: {
                 chat_id: roomId,
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 }

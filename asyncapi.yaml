@@ -22,10 +22,10 @@ channels:
         bindings:
           socketio:
             eventName: connection
-  authError:
+  error:
     subscribe:
-      operationId: auth error
-      summary: Receive auth errors
+      operationId: error
+      summary: Receive errors
       message:
         payload:
           type: object
@@ -35,7 +35,7 @@ channels:
               description: here user receive message of error
         bindings:
           socketio:
-            eventName: auth error
+            eventName: error
 
   connected:
     subscribe:

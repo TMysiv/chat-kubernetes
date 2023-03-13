@@ -15,6 +15,8 @@ export class ChatService {
                     has: userId,
                 },
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -25,6 +27,8 @@ export class ChatService {
                 id,
                 members: [userId, data.replyTo],
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -36,6 +40,8 @@ export class ChatService {
                     has: userId,
                 },
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -49,6 +55,8 @@ export class ChatService {
                     push: userId,
                 },
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -68,6 +76,8 @@ export class ChatService {
                     set: users.members.filter((user) => user !== userId),
                 },
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 
@@ -76,6 +86,8 @@ export class ChatService {
             where: {
                 id: roomId,
             },
+        }).catch(() => {
+            throw new BadRequestException('Something went wrong');
         });
     }
 }
