@@ -28,6 +28,7 @@ private chatService:ChatService,
     io: Server;
 
     async handleConnection(socket: SocketExtends) {
+        console.log(socket.id);
         const token = socket.handshake.headers.authorization;
 
         const validation = await this.authService.validateToken(token);

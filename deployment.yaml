@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chats-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chats
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: chats
+    spec:
+      containers:
+        - name: chats
+          image: nightvvolf/chats:latest
+          ports:
+            - containerPort: 5200
